@@ -72,36 +72,20 @@ from (select distinct ship_mode from stg.orders o) a;
 
 
 /* создание таблицы клиентов */
-CREATE TABLE customer_dim
-(
- cust_key      integer NOT NULL,
- customer_id   varchar(30) NOT NULL,
- customer_name varchar(50) NOT NULL,
- CONSTRAINT PK_80 PRIMARY KEY ( cust_key )
-);
-
-/* добавлению уникальных клиентов */
-insert into customer_dim 
-select row_number () over(), customer_id, customer_name
-from (select distinct customer_id, customer_name
-from stg.orders o) a;
-
-
-/* создание результирующей таблицы */
 CREATE TABLE sales_fact
 (
+ row_id     integer NOT NULL,
  order_id   varchar(14) NOT NULL,
+ order_date date NOT NULL,
+ ship_date  date NOT NULL,
+ ship_id    serial NOT NULL,
+ cust_key   integer NOT NULL,
+ geo_id     serial NOT NULL,
+ prod_id    serial NOT NULL,
  sales      numeric(9,4) NOT NULL,
- quantity   int4range NOT NULL,
+ quantity   integer NOT NULL,
  discount   numeric(4, 2) NOT NULL,
  profit     numeric(21,16) NOT NULL,
- order_date date NOT NULL,
- ship_id    serial NOT NULL,
- prod_id    serial NOT NULL,
- geo_id     serial NOT NULL,
- ship_date  date NOT NULL,
- cust_key   integer NOT NULL,
- row_id     int4range NOT NULL,
  CONSTRAINT PK_16 PRIMARY KEY ( row_id ),
  CONSTRAINT FK_24 FOREIGN KEY ( order_date, ship_date ) REFERENCES calendar_dim ( order_date, ship_date ),
  CONSTRAINT FK_38 FOREIGN KEY ( prod_id ) REFERENCES product_dim ( prod_id ),
@@ -135,3 +119,16 @@ CREATE INDEX FK_91 ON sales_fact
 (
  cust_key
 );
+
+
+/* добавлению записей в результирующую таблицу */
+insert into sales_fact
+select row_id, order_id, order_date, ship_date, ship_id, cust_key, geo_id, prod_id, sales, quantity, discount, profit
+from (
+select o.row_id, o.order_id, o.order_date, o.ship_date, s.ship_id, c.cust_key, p.prod_id, g.geo_id, o.sales, o.quantity,
+o.discount, o.profit
+from stg.orders as o 
+left join main.shipping_dim as s  on o.ship_mode = s.ship_mode
+left join main.customer_dim as c  on o.customer_id  = c.customer_id
+left join main.product_dim as p  on o.product_id  = p.product_id
+left join main.geography_dim as g on o.city  = g.city and o.postal_code = g.postal_code) a;
