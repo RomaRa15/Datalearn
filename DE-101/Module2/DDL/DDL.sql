@@ -57,6 +57,16 @@ insert into main.geography_dim
 select row_number () over (), country, city, state, region, postal_code
 from (select distinct country, city, state, region, postal_code from stg.orders) a;
 
+/* добавление postal_code для города Burlington */
+update main.geography_dim 
+set postal_code = '05401'
+where city = 'Burlington'  and postal_code is null;
+
+/* добавление postal_code для source file */
+update stg.orders
+set postal_code = '05401'
+where city = 'Burlington'  and postal_code is null;
+
 /* создание shipping_dim */
 CREATE TABLE shipping_dim
 (
@@ -132,3 +142,6 @@ left join main.shipping_dim as s  on o.ship_mode = s.ship_mode
 left join main.customer_dim as c  on o.customer_id  = c.customer_id
 left join main.product_dim as p  on o.product_id  = p.product_id
 left join main.geography_dim as g on o.city  = g.city and o.postal_code = g.postal_code) a;
+
+select count(*) from main.sales_fact sf;
+--got 9994 rows
