@@ -26,13 +26,13 @@ CREATE TABLE Pilots
 
 CREATE TABLE Flights
 (
+ flight_id       int NOT NULL,
+ flight_dt       date NOT NULL,
  plane_id        int NOT NULL,
  first_pilot_id  int NOT NULL,
  second_pilot_id int NOT NULL,
  destination     varchar(50) NOT NULL,
  quantity        int NOT NULL,
- flight_id       int NOT NULL,
- flight_dt       date NOT NULL,
  CONSTRAINT PK_48 PRIMARY KEY ( flight_id, flight_dt ),
  CONSTRAINT FK_52 FOREIGN KEY ( plane_id ) REFERENCES planes ( plane_id ),
  CONSTRAINT FK_64 FOREIGN KEY ( first_pilot_id ) REFERENCES Pilots ( pilot_id ),
