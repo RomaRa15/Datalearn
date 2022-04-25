@@ -1,0 +1,13 @@
+SELECT distinct(userId)
+    FROM ctr.metrics cm GLOBAL
+    JOIN (
+        SELECT distinct(cityHash64(ring)) AS rr
+            FROM bazalogs.access_log
+                WHERE date BETWEEN '2022-02-01' AND '2022-02-14'
+                    AND url LIKE '%contacts-invitation-to-register-shown%'
+                    AND userid = -1) alg 
+    ON cityHash64(cm.ring) = alg.rr
+    GLOBAL Left JOIN bazar.bulletins bb ON cm.userId = bb.reg_user_id
+        WHERE cm.date BETWEEN '2022-02-01' AND '2022-02-14'
+           AND userId div 1000000 = 24
+           AND bb.id = 0
