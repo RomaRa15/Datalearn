@@ -107,4 +107,92 @@ WHERE worker_name LIKE '%Сидорова%'
 #3. Поднять ставку оплаты на 10% для некоторой должности.
 UPDATE position
 SET wage = wage*1.1
-WHERE position_name LIKE '%Маркетолог%'
+WHERE position_name LIKE '%Маркетолог%';
+
+#4.Вывести работников, которые получили оклад за часы больше и меньше либо равно 15 000 руб. в конкретном месяце
+WITH get_hours (worker_name, worker_id, date_report, wage, one_hours, double_hours) AS (
+Select worker_name, worker_id, date_report, wage,
+CASE 
+	WHEN DAYOFWEEK(date_report) BETWEEN 2 AND 6 AND amount <=8 THEN amount
+    WHEN DAYOFWEEK(date_report) BETWEEN 2 AND 6 AND amount > 8 THEN 8
+    ELSE 0
+END as one_hour,
+CASE 
+	When DAYOFWEEK(date_report) IN (1,7) THEN amount
+    When DAYOFWEEK(date_report) BETWEEN 2 AND 6 AND amount > 8 THEN amount - 8
+    ELSE 0
+END as double_hour
+From worker JOIN report USING(worker_id)
+			JOIN position USING(position_id)
+),
+get_month_salary (month, worker_name, worker_id, month_salary) AS (
+Select MONTH(date_report), worker_name, worker_id, SUM(wage*one_hours)+SUM(2*wage*double_hours)
+From get_hours
+GROUP BY MONTH(date_report), worker_name
+)
+SELECT month, 'больше 15 000 руб.' Признак, GROUP_CONCAT(worker_name ORDER BY month_salary DESC) Работники, COUNT(*) Кол_во
+FROM get_month_salary
+WHERE month = 2 AND month_salary > 15000
+UNION
+SELECT month, 'меньше 15 000 руб.' Признак, GROUP_CONCAT(worker_name ORDER BY month_salary DESC) Работники, COUNT(*) Кол_во
+FROM get_month_salary
+WHERE month = 2 AND month_salary <= 15000;
+
+#5.Вывести самый большой и самый низкий оклады на руки по каждому месяцу
+WITH get_hours (worker_name, worker_id, date_report, wage, one_hours, double_hours) AS (
+Select worker_name, worker_id, date_report, wage,
+CASE 
+	WHEN DAYOFWEEK(date_report) BETWEEN 2 AND 6 AND amount <=8 THEN amount
+    WHEN DAYOFWEEK(date_report) BETWEEN 2 AND 6 AND amount > 8 THEN 8
+    ELSE 0
+END as one_hour,
+CASE 
+	When DAYOFWEEK(date_report) IN (1,7) THEN amount
+    When DAYOFWEEK(date_report) BETWEEN 2 AND 6 AND amount > 8 THEN amount - 8
+    ELSE 0
+END as double_hour
+From worker JOIN report USING(worker_id)
+			JOIN position USING(position_id)
+),
+get_month_salary (month, worker_name, worker_id, month_salary) AS (
+Select MONTH(date_report), worker_name, worker_id, SUM(wage*one_hours)+SUM(2*wage*double_hours)
+From get_hours
+GROUP BY MONTH(date_report), worker_name
+)
+
+SELECT DISTINCT month, (MAX(month_salary) OVER win_list) Макс_оклад, (MIN(month_salary) OVER win_list) Мин_оклад
+FROM get_month_salary
+WINDOW win_list AS (
+PARTITION BY month
+);
+
+#6.Вывести топ 5 работников, которые отработали наибольшее количество часов по двойной ставке за год
+WITH get_hours (worker_name, worker_id, date_report, wage, one_hours, double_hours) AS (
+Select worker_name, worker_id, date_report, wage,
+CASE 
+	WHEN DAYOFWEEK(date_report) BETWEEN 2 AND 6 AND amount <=8 THEN amount
+    WHEN DAYOFWEEK(date_report) BETWEEN 2 AND 6 AND amount > 8 THEN 8
+    ELSE 0
+END as one_hour,
+CASE 
+	When DAYOFWEEK(date_report) IN (1,7) THEN amount
+    When DAYOFWEEK(date_report) BETWEEN 2 AND 6 AND amount > 8 THEN amount - 8
+    ELSE 0
+END as double_hour
+From worker JOIN report USING(worker_id)
+			JOIN position USING(position_id)
+),
+get_top_5 (sum) AS (
+
+SELECT SUM(double_hours)
+FROM get_hours
+GROUP BY worker_name
+ORDER BY 1 DESC
+LIMIT 5
+)
+
+SELECT worker_name Работник, SUM(double_hours) Сумма_2х_часов
+FROM get_hours
+GROUP BY worker_name
+HAVING SUM(double_hours) >= ANY (SELECT * FROM get_top_5)
+ORDER BY 2 DESC;
