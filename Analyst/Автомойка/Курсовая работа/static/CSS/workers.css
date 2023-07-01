@@ -334,7 +334,7 @@ p {
     color: white;
 }
 
-#all_plan {
+#all_plan, #all_plan_active {
     margin: 0;
     width: 230px;
     height: 33px;
@@ -342,6 +342,11 @@ p {
     color: #414141;
     font-family: 'Montserrat', sans-serif;
     font-size: 15px;
+}
+
+#all_plan_active {
+    background: #5350EF;
+    color: white;
 }
 
 .table_plan {
@@ -369,6 +374,10 @@ th,
     text-align: center;
     width: 153px;
     height: 34px;
+}
+
+.slot_free {
+    color: white;
 }
 
 td {
