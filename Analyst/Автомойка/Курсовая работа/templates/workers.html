@@ -1,0 +1,132 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="/static/css/workers.css" />
+    <title> Автомойка Washme </title>
+    {% macro render_table() %}
+    <table>
+        <tr>
+            <td></td>
+            <th>Бокс 1</th>
+            <th>Бокс 2</th>
+            <th>Бокс 3</th>
+        </tr>
+        {% for i in range(len(days)) %}
+            <tr>
+                <td class="time">
+                    {{ days.loc[i, "dt"] }}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endmacro %}
+    <style>
+        header {
+        background-image: url(static/images/nav-back.jpg);
+        background-repeat: no-repeat;
+        background-size: cover;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <ul class="nav-block">
+                <li class="nav-item"><a href="/">Washme</a></li>
+                <li class="nav-item" {% if request.path == '/' %} id="active" {% endif %}><a href="/">Главная</a></li>
+                <li class="nav-item"><a href="#">Клиенты</a></li>
+                <li class="nav-item"><a href="#">Работники</a></li>
+                <li class="nav-item"><a href="#">Боксы</a></li>
+                <li class="nav-item"><a href="#">Статистика</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="main">
+        <div class = main_part>
+            <form action="/workers" method="get">
+                <div class="manage_center">
+                    <div class="manage_tab">
+                        <div class="workers_container">
+                            <h3>Работники</h3>
+                            <div class="workers_list">
+                                {% for i in range(len(workers_list)) %}
+                                <div class="worker_card">
+                                    <div class="worker_image">
+                                        <img src="/static/images/img_{{ i+1 }}.png" alt="Фотография работника">
+                                        <div class="btn_choose">
+                                            <input type="radio" name="worker_id" id="worker_{{ i+1 }}" value="{{ i+1 }}" {% if i+1 == worker_id %}checked{% endif %}>
+                                            <label for="worker_{{ i+1 }}">Выбрать</label>
+                                        </div>
+                                    </div>
+                                    <div class="worker_info">
+                                        <div class="worker_name">
+                                            {{ workers_list.loc[i, "worker_name"] }}
+                                        </div>
+                                        <div class="worker_desc_container">
+                                            Должность: <span class="worker_desc">{{ workers_list.loc[i, "worker_position"] }}</span>
+                                        </div>
+                                        <div class="worker_desc_container">
+                                            Телефон: <span class="worker_desc">{{ workers_list.loc[i, "worker_phone"] }}</span>
+                                        </div>
+                                    </div>
+                                </div>                                
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="boxes">
+                            <h3>Боксы</h3>
+                            <div class="radio_button_group">
+                                {% for i in range(3) %}
+                                <div class="radio_button">
+                                    {% if i+1 == box_id  %}
+                                        <input type="radio" name="box_id" id="box{{ i+1 }}" value="{{ i+1 }}" checked>
+                                    {% else %}
+                                        <input type="radio" name="box_id" id="box{{ i+1 }}" value="{{ i+1 }}">
+                                    {% endif %}
+                                        <label class="custom-radio-button" for="box{{ i+1 }}"><span>{{ i+1 }}</span></label><br>
+                                </div>
+                                {% endfor %}
+                            </div> 
+                        </div>
+                        <div class="date">
+                            <h3>Дата</h3>
+                            {{ delta }}
+                            <div class="first_date">
+                                <input type="date" name="first_date" value="{{ first_date }}">
+                            </div>
+                            <p>по</p>
+                            <div class="second_date">
+                                <input type="date" name="second_date" value="{{ second_date }}">
+                            </div>
+                        </div>
+                        <div class="btn_container">
+                            <button class="btn" id="btn_add" name="btn" value="1">Добавить в расписание</button>
+                            <button class="btn" id="btn_search" name="btn"value="2">Найти</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class = main_part>
+            <h3>Распределение работников по боксам</h3>
+            <div class="two_btn">
+                {{ btn }}
+                {% if worker_id != "" or worker_id != None %}
+                    <div class="worker_plan" id="checked">{{ worker_name["worker_name"][0] }}</div>
+                {% else %}
+                    <div class="worker_plan"></div>
+                {% endif %}
+                <form action="/workers" method="get">
+                    <button class="btn" id="all_plan" name="btn" value="3">Полное расписание</button>
+                </form>
+            </div>
+            <div class="table_plan">
+                {{ render_table() }}
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

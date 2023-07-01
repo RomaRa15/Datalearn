@@ -1,0 +1,455 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,600;0,700;1,600&display=swap');
+
+/* Навигация */
+header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  padding: 10px;
+  height: 112px;
+  margin-bottom: 5px;
+  padding: 0;
+}
+
+.nav-block {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  width: 1200px;
+  height: 65px;
+  background: #594CEF;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0px;
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+.nav-item {
+  flex: 1;
+  text-align: center;
+}
+
+.nav-item a {
+  text-decoration: none;
+  width: 88px;
+  height: 24px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 24px;
+  color: #FFFFFF;
+}
+
+.nav-item:hover a {
+  text-decoration-line: underline;
+  text-decoration-thickness: 0.15rem;
+}
+
+#active {
+  color: #FFFFFF;
+  text-decoration-line: underline;
+  text-decoration-thickness: 0.15rem;
+}
+
+.main {
+  display: grid;
+  grid-template-columns: 1fr 2.5fr;
+}
+
+/* Блок калькуляции */
+
+.calc {
+  padding: 5px;
+  margin: 5px;
+  background: #F8F8F8;
+  border-radius: 20px;
+}
+
+.radio_button_group {
+  display: flex;
+  justify-content: center;
+
+}
+
+.radio_button {
+  display: inline-block;
+  margin-top: 0px;
+  margin-right: 5px;
+  margin-left: 5px;
+}
+
+.radio_button input[type="radio"] {
+  display: none;
+}
+
+input[type="radio"]:checked+label.custom-radio-button {
+  background-color: #5350EF;
+}
+
+.custom-radio-button {
+  display: inline-block;
+  width: 90px;
+  height: 90px;
+  border-radius: 4px;
+  background: #D9D9D9;
+  box-shadow: 2px 2px 4px 0px rgba(0, 0, 0, 0.25);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.custom-radio-button input[type="radio"] {
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.custom-radio-button label {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+}
+
+.custom-radio-button label img {
+  max-width: 100%;
+  max-height: 100%;
+  display: block;
+  margin: 0 auto;
+}
+
+/* Блок_калькуляции Список_услуг */
+.service_list {
+  max-height: 320px;
+  width: 342px;
+  padding: 18px;
+  overflow-y: scroll;
+  background: #F0F0F0;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 8px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.checkbox-area {
+  display: inline-block;
+  cursor: pointer;
+}
+
+.checkbox {
+  display: none;
+}
+
+.service_item {
+  width: 323px;
+  height: 56px;
+  background: #D9D9D9;
+  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.05);
+  border-radius: 5px;
+  margin-bottom: 7px;
+}
+
+.checkbox:hover+.service_item {
+  background-color: rgb(234, 234, 234);
+}
+
+.checkbox:checked+.service_item {
+  border: 3px solid #5350EF;
+  width: 320px;
+  height: 53px;
+}
+
+.service_name {
+  display: inline-block;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: bold;
+  font-size: 12px;
+  margin-top: 7px;
+  margin-left: 15px;
+}
+
+.service_desc {
+  display: inline-block;
+  color: rgba(0, 0, 0, 0.2);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 18px;
+  margin-top: 5px;
+  margin-left: 15px;
+}
+
+.service_desc_2 {
+  color: #5350EF;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.my_date {
+  display: flex;
+  justify-content: center;
+}
+
+hr {
+  width: 350px;
+  border-width: 2px;
+}
+
+.calc_result_group {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 auto;
+  width: 338px;
+}
+
+.calc_result_item {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  color: #5350EF;
+  text-align: center;
+}
+
+.calc_price, .calc_time {
+  text-align: center;
+}
+
+.calc_price h3, .calc_time h3{
+  margin: 2px;
+  text-decoration: none;
+}
+
+h2 {
+  text-align: center;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 30px;
+}
+
+.result h2 {
+  margin-bottom: 1px;
+}
+
+h3 {
+  text-align: center;
+  text-decoration-line: underline;
+  font-family: 'Montserrat', sans-serif;
+}
+
+p {
+  text-align: center;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+}
+
+.time_table {
+  padding: 5px;
+  margin: 5px;
+  background: #F8F8F8;
+  border-radius: 20px;
+}
+
+.table_grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr 0.1fr 2fr 1fr;
+}
+
+table {
+  width: 370px;
+}
+
+td {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 22px;
+}
+
+th,
+.time,
+.slot_busy,
+.slot_free {
+  background-color: #D9D9D9;
+  border-radius: 2px;
+  text-align: center;
+  width: 90px;
+  height: 20px;
+}
+
+.slot_free {
+  background: #594CEF;
+  border-radius: 2px;
+}
+
+input[type="checkbox"]:disabled {
+  display: none;
+}
+
+input[type="checkbox"] {
+  cursor: pointer;
+}
+
+th {
+  background-color: #F8F8F8;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  font-size: 17px;
+  line-height: 26px;
+}
+
+.client {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin-top: 26px;
+  margin-bottom: 34px;
+  align-items: end;
+}
+
+.client div {
+  padding-right: 10px;
+}
+
+.input_area input {
+  margin-top: 5px;
+  height: 25px;
+  outline: none;
+  border-radius: 2px;
+  background: #F8F8F8;
+  box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.25);
+  border: none;
+  text-align: center;
+}
+
+.input_area label {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+#client_1 input {
+  width: 128px;
+}
+
+#client_2 input {
+  width: 90px;
+}
+
+#client_3 input {
+  width: 156px;
+}
+
+#client_4 input {
+  width: 219px;
+}
+
+.or {
+  margin-left: 15px;
+  margin-right: 15px;
+}
+
+.text_or {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.button_div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn_search {
+  border: none;
+  font-family: 'Montserrat', sans-serif;
+  background: #D9D9D9;
+  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.05);
+  border-radius: 3px;
+  cursor: pointer;
+  margin: 7px;
+  width: 390px;
+  height: 35px;
+}
+
+.btn_search:hover {
+  background-color: #5a4def;
+  transition: background-color 0.5s ease-in-out;
+  color: white;
+}
+
+.btn_search:active {
+  transform: scale(0.96);
+}
+
+#reset {
+  width: 380px;
+}
+
+#reset:hover {
+  background-color: #bcbcbc;
+}
+
+.btn {
+  display: inline-block;
+  box-sizing: border-box;
+  font-family: 'Montserrat', sans-serif;
+  padding: 0 20px;
+  margin: 0 15px 15px 0;
+  outline: none;
+  border: none;
+  border-radius: 6px;
+  width: 370px;
+  height: 52px;
+  line-height: 40px;
+  font-size: 17px;
+  font-weight: 600;
+  text-decoration: none;
+  color: #ffffff;
+  background: #5a4def;
+  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.05);
+  border-radius: 5px;
+  cursor: pointer;
+  user-select: none;
+  appearance: none;
+  touch-action: manipulation;
+  margin: auto;
+}
+
+.btn:focus-visible {
+  box-shadow: 0 0 0 2px #666;
+}
+
+.btn:hover {
+  background-color: #754def;
+  transition: background-color 0.5s ease-in-out;
+}
+
+.btn:active {
+  transform: scale(0.96);
+}
+
+.btn:disabled {
+  pointer-events: none;
+  opacity: 0.65;
+}
+
+input[type="date"] {
+  border: 1px solid #ccc;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  color: #333;
+}

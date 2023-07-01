@@ -1,0 +1,211 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="/static/css/main.css" />
+    <title> Автомойка Washme </title>
+    {% macro render_table(my_date, part) %}
+        <table>
+            <tr>
+                <th></th>
+                <th>Бокс 1</th>
+                <th>Бокс 2</th>
+                <th>Бокс 3</th>
+            </tr>
+            {% for i in range(24) %}
+                {% if part == 2 %}
+                    {% set i = i + 24  %}
+                {% endif %}
+                <tr>
+                    <td class="time">
+                        {{ time_box_1.loc[i, "time_start"] }}
+                    </td>
+                    {% if time_box_1.loc[i, "order_id"] == time_box_1.loc[i, "order_id"] %}
+                        <td class="slot_busy" title="{{ time_box_1.loc[i, 'client_name']}}, {{time_box_1.loc[i, 'car_number'] }}, {{time_box_1.loc[i, 'client_phone'] }}">
+                           <!-- {{ time_box_1.loc[i, "time_slot_id"] }} -->
+                        </td>
+                    {% else %}
+                        <td class="slot_free">
+                            {% if time_box_1.loc[i, "time_slot_id"] in free_slot["time_slot_id"].tolist() %}
+                                <input type="checkbox" name="slot_id" value="{{ time_box_1.loc[i, 'time_slot_id'] }}">
+                            {% else %}
+                                <input type="checkbox" name="slot_id" value="{{ time_box_1.loc[i, 'time_slot_id'] }}" disabled>
+                            {% endif %}
+                        </td>
+                    {% endif %}   
+                    {% if time_box_2.loc[i, "order_id"] == time_box_2.loc[i, "order_id"] %}
+                        <td class="slot_busy" title="{{ time_box_2.loc[i, 'client_name']}}, {{time_box_2.loc[i, 'car_number'] }}, {{time_box_2.loc[i, 'client_phone'] }}">
+                            <!-- {{ time_box_2.loc[i, "time_slot_id"] }} -->
+                    {% else %}
+                        <td class="slot_free">
+                            {% if time_box_2.loc[i, "time_slot_id"] in free_slot["time_slot_id"].tolist() %}
+                                <input type="checkbox" name="slot_id" value="{{ time_box_2.loc[i, 'time_slot_id'] }}">
+                            {% else %}
+                                <input type="checkbox" name="slot_id" value="{{ time_box_2.loc[i, 'time_slot_id'] }}" disabled>
+                            {% endif %}
+                    {% endif %}   
+                    {% if time_box_3.loc[i, "order_id"] == time_box_3.loc[i, "order_id"] %}
+                        <td class="slot_busy" title="{{ time_box_3.loc[i, 'client_name']}}, {{time_box_3.loc[i, 'car_number'] }}, {{time_box_3.loc[i, 'client_phone'] }}">
+                            <!-- {{ time_box_3.loc[i, "time_slot_id"] }} -->
+                    {% else %}
+                        <td class="slot_free">
+                            {% if time_box_3.loc[i, "time_slot_id"] in free_slot["time_slot_id"].tolist() %}
+                                <input type="checkbox" name="slot_id" value="{{ time_box_3.loc[i, 'time_slot_id'] }}">
+                            {% else %}
+                                <input type="checkbox" name="slot_id" value="{{ time_box_3.loc[i, 'time_slot_id'] }}" disabled>
+                            {% endif %}
+                    {% endif %}   
+                </tr>
+            {% endfor %}
+        </table>
+    {% endmacro %}
+    <style>
+        header {
+        background-image: url(static/images/nav-back.jpg);
+        background-repeat: no-repeat;
+        background-size: cover;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <ul class="nav-block">
+                <li class="nav-item"><a href="/">Washme</a></li>
+                <li class="nav-item" {% if request.path == '/' %} id="active" {% endif %}><a href="/">Главная</a></li>
+                <li class="nav-item"><a href="#">Клиенты</a></li>
+                <li class="nav-item"><a href="/workers">Работники</a></li>
+                <li class="nav-item"><a href="#">Боксы</a></li>
+                <li class="nav-item"><a href="#">Статистика</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="main">
+        <div class="calc">
+            <h2>Калькулятор услуг</h2>
+            <div>
+                <form action="/" method="get">
+                    <h3>Тип автомобиля</h3>
+                    <div class="radio_button_group">
+                        {% for i in range(len(car_type)) %}
+                        <div class="radio_button">
+                            {% if i+1 == car_type_id  %}
+                            <input type="radio" name="car_type_id" id="type{{ i+1 }}" value="{{ i+1 }}" checked>
+                            {% else %}
+                            <input type="radio" name="car_type_id" id="type{{ i+1 }}" value="{{ i+1 }}">
+                            {% endif %}
+                            <label class="custom-radio-button" for="type{{ i+1 }}"><img src="/static/images/car{{ i+1 }}.png"></label><br>
+                        </div>
+                        {% endfor %}
+                    </div> 
+                    <div class="button_div">               
+                        <button class="btn_search" type="submit">Найти услуги</button>
+                    </div>  
+                </form>
+            </div>
+            <div>
+                <form action="/" method="get">
+                    <h3>Список услуг ({{ len(service_id) }})</h3> 
+                    {% if car_type_id == "" or car_type_id == None %}
+                        <p>Для просмотра списка услуг, выберите тип авто</p>
+                    {% else %}
+                    <div class="service_list">
+                        {% for i in range(len(services_for_car)) %}
+                        <label for="item{{ i+1 }}" class="checkbox-area">
+                            {% if services_for_car.loc[i, "service_id"] in service_id %}
+                                <input type="checkbox" class="checkbox" name="services[]" id="item{{ i+1 }}" value="{{ i+1 }}" checked>
+                            {% else %}
+                                <input type="checkbox" class="checkbox" name="services[]" id="item{{ i+1 }}" value="{{ i+1 }}">
+                            {% endif %}
+                            <div class="service_item">
+                                <span class="service_name">{{ services_for_car.loc[i, "service_name"] }}</span><br>
+                                <span class="service_desc">Цена:</span> <span class="service_desc_2">{{ services_for_car.loc[i, "price"] }} руб.</span><span class="service_desc">Время:</span> <span class="service_desc_2">{{ services_for_car.loc[i, "time_need"] }} мин.</span>
+                            </div>
+                          </label>
+                        {% endfor %}
+                    </div>
+                    <div class="button_div">
+                        <input class="btn_search" id="reset" name=reset type=submit value=Очистить>
+                    </div>
+                    <br>
+                    <h3>Дата предоставления услуги</h3>
+                    <div class="my_date">
+                        {% if my_date == "" %}
+                            <input type="date" name="my_date">
+                        {% else %}
+                            <input type="date" name="my_date" value="{{my_date}}">
+                        {% endif %}
+                    </div>
+                    <br>
+                    <br>
+                    <div class="button_div">
+                        <button class="btn" type="submit">Рассчитать</button>
+                    </div>
+                    {% endif %}
+                </form>
+            </div>
+            <div class = result>
+                {% if service_id != [] %}
+                    <h2>Итого</h2>
+                    <hr>
+                    <div class="calc_result_group">
+                        <div class="calc_price">
+                            <h3>Цена мойки</h3>
+                            <span class="calc_result_item">{{ calc.iloc[0]['SUM(price)'] }} руб.</span>
+                        </div>
+                        <div class="calc_time">
+                            <h3>Время услуги</h3>
+                            <span class="calc_result_item">~{{ calc.iloc[0]['SUM(time_need)'] }} мин. | {{ calc.iloc[0]['slot'] }} слота</span>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="time_table">
+            <form action="/" method="get">
+                <h2>
+                    Расписание на {{my_date}}
+                </h2>
+                <div class="table_grid">
+                    <div></div>
+                    <div>{{ render_table(my_date, 1) }}</div>
+                    <div></div>
+                    <div>{{ render_table(my_date, 2) }}</div>
+                    <div></div>
+                </div>
+                <div class="client">
+                    <div class="input_area" id="client_1">
+                        <label for="client_name">Имя клиента</label><br>
+                        <input type="text" name="client_name" placeholder="Введите имя">
+                    </div>
+                    <div class="input_area" id="client_2">
+                        <label for="car_number">Номер</label><br>
+                        <input type="text" name="car_number" placeholder="A777AA125">
+                    </div>
+                    <div class="input_area" id="client_3">
+                        <label for="client_phone">Телефон</label><br>
+                        <input type="text" name="client_phone" placeholder="+79141937432">
+                    </div>
+                    <div class="or">
+                        <span class="text_or">или</span>
+                    </div>
+                    <div class="input_area" id="client_4">
+                        <label for="client_old">Существующий клиент</label><br>
+                        <input list="client_old" name="client_old" placeholder="Выберите клиента и номер">
+                        <datalist id="client_old">
+                            {% for i in range(len(client_list)) %}
+                                <option value="{{ client_list.loc[i, 'client_name'], client_list.loc[i, 'car_number'] }}">
+                            {% endfor %}
+                        </datalist>
+                    </div>
+                </div>
+                <div class="button_div">
+                    <button class="btn" type="submit" name="bron" value="1">Забронировать</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>
