@@ -34,7 +34,10 @@ def set_box_worker(conn, first_date, second_date, worker_id, box_id):
 
     # Check if records already exist
     cur.execute('''
-    SELECT COUNT(*) FROM box_worker WHERE worker_id = :b_worker_id AND box_id = :b_box_id AND work_date >= :b_first_date AND work_date <= :b_second_date;
+    SELECT COUNT(*) 
+    FROM box_worker 
+    WHERE (worker_id = :b_worker_id OR box_id = :b_box_id) AND
+          work_date >= :b_first_date AND work_date <= :b_second_date;
     ''', {"b_worker_id": worker_id, "b_box_id": box_id, "b_first_date": first_date, "b_second_date": second_date})
     count = cur.fetchone()[0]
 
@@ -67,10 +70,29 @@ def get_worker_plan(conn, worker_id, first_date, second_date):
                        work_date = :b_first_date)
     ''', conn, params={"b_worker_id": worker_id, "b_first_date": first_date, "b_second_date": second_date})
 
-def get_all_plan(conn, first_date, second_date):
+def get_box_1_plan(conn, first_date, second_date):
     # выбираем и выводим записи о бронированиях
     return pandas.read_sql('''
-    SELECT *
+    SELECT *, SUBSTR(worker_name, 1, INSTR(worker_name, ' ') - 1) AS worker_name_short
     FROM box_worker JOIN worker USING (worker_id)
-    WHERE (work_date BETWEEN :b_first_date and :b_second_date) or work_date = :b_first_date
+    WHERE box_id = 1 AND (work_date BETWEEN :b_first_date and :b_second_date or work_date = :b_first_date)
+    ORDER BY work_date
+    ''', conn, params={"b_first_date": first_date, "b_second_date": second_date})
+
+def get_box_2_plan(conn, first_date, second_date):
+    # выбираем и выводим записи о бронированиях
+    return pandas.read_sql('''
+    SELECT *, SUBSTR(worker_name, 1, INSTR(worker_name, ' ') - 1) AS worker_name_short
+    FROM box_worker JOIN worker USING (worker_id)
+    WHERE box_id = 2 AND (work_date BETWEEN :b_first_date and :b_second_date or work_date = :b_first_date)
+    ORDER BY work_date
+    ''', conn, params={"b_first_date": first_date, "b_second_date": second_date})
+
+def get_box_3_plan(conn, first_date, second_date):
+    # выбираем и выводим записи о бронированиях
+    return pandas.read_sql('''
+    SELECT *, SUBSTR(worker_name, 1, INSTR(worker_name, ' ') - 1) AS worker_name_short
+    FROM box_worker JOIN worker USING (worker_id)
+    WHERE box_id = 3 AND (work_date BETWEEN :b_first_date and :b_second_date or work_date = :b_first_date)
+    ORDER BY work_date
     ''', conn, params={"b_first_date": first_date, "b_second_date": second_date})

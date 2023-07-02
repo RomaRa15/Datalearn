@@ -40,25 +40,28 @@
                         </td>
                     {% endif %}
                 {% else %}
-                    {% if all_plan.loc[i, "work_date"] in days["dt"].tolist() and all_plan.loc[i, "box_id"] == 1 %}
+                    {% if days.loc[i, "dt"] in box_1_plan["work_date"].tolist()  %}
+                        {% set date_index = box_1_plan["work_date"].tolist().index(days.loc[i, "dt"]) %}
                         <td class="slot_free">
-                            {{ all_plan.loc[i, "worker_name"] }}
+                            {{ box_1_plan.loc[date_index, "worker_name_short"] }}
                         </td>
                     {% else %}
                         <td class="slot_busy">
                         </td>
                     {% endif %}
-                    {% if all_plan.loc[i, "work_date"] in days["dt"].tolist() and all_plan.loc[i, "box_id"] == 2 %}
+                    {% if days.loc[i, "dt"] in box_2_plan["work_date"].tolist()  %}
+                        {% set date_index = box_2_plan["work_date"].tolist().index(days.loc[i, "dt"]) %}
                         <td class="slot_free">
-                            {{ all_plan.loc[i, "worker_name"] }}
+                            {{ box_2_plan.loc[date_index, "worker_name_short"] }}
                         </td>
                     {% else %}
                         <td class="slot_busy">
                         </td>
                     {% endif %}
-                    {% if all_plan.loc[i, "work_date"] in days["dt"].tolist() and all_plan.loc[i, "box_id"] == 3 %}
+                    {% if days.loc[i, "dt"] in box_3_plan["work_date"].tolist()  %}
+                        {% set date_index = box_3_plan["work_date"].tolist().index(days.loc[i, "dt"]) %}
                         <td class="slot_free">
-                            {{ all_plan.loc[i, "worker_name"] }}
+                            {{ box_3_plan.loc[date_index, "worker_name_short"] }}
                         </td>
                     {% else %}
                         <td class="slot_busy">
@@ -159,18 +162,17 @@
         </div>
         <div class = main_part>
             <h3>Распределение работников по боксам</h3>
-            {{ worker_id, btn  }}
             <div class="two_btn">
-                {% if worker_id != "" %}
+                {% if worker_id is not none and worker_id != "" %}
                     <div class="worker_plan" id="checked">{{ worker_name["worker_name"][0] }}</div>
                 {% else %}
                     <div class="worker_plan"></div>
                 {% endif %}
                 <form action="/workers" method="get">
-                {% if btn == 3 %}
-                    <button class="btn" id="all_plan_active" name="btn" value="3">Полное расписание</button>
-                {% else %}
+                {% if btn == 1 or btn == 2 and worker_id != ""%}
                     <button class="btn" id="all_plan" name="btn" value="3">Полное расписание</button>
+                {% else %}
+                    <button class="btn" id="all_plan_active" name="btn" value="3">Полное расписание</button>
                 {% endif %}
                 </form>
             </div>

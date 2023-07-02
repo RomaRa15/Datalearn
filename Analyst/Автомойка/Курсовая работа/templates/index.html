@@ -20,9 +20,8 @@
                     <td class="time">
                         {{ time_box_1.loc[i, "time_start"] }}
                     </td>
-                    {% if time_box_1.loc[i, "order_id"] == time_box_1.loc[i, "order_id"] %}
+                    {% if time_box_1.loc[i, "order_id"] == time_box_1.loc[i, "order_id"] and time_box_1.loc[i, "order_id"] is not none %}
                         <td class="slot_busy" title="{{ time_box_1.loc[i, 'client_name']}}, {{time_box_1.loc[i, 'car_number'] }}, {{time_box_1.loc[i, 'client_phone'] }}">
-                           <!-- {{ time_box_1.loc[i, "time_slot_id"] }} -->
                         </td>
                     {% else %}
                         <td class="slot_free">
@@ -33,9 +32,8 @@
                             {% endif %}
                         </td>
                     {% endif %}   
-                    {% if time_box_2.loc[i, "order_id"] == time_box_2.loc[i, "order_id"] %}
+                    {% if time_box_2.loc[i, "order_id"] == time_box_2.loc[i, "order_id"] and time_box_2.loc[i, "order_id"] is not none %}
                         <td class="slot_busy" title="{{ time_box_2.loc[i, 'client_name']}}, {{time_box_2.loc[i, 'car_number'] }}, {{time_box_2.loc[i, 'client_phone'] }}">
-                            <!-- {{ time_box_2.loc[i, "time_slot_id"] }} -->
                     {% else %}
                         <td class="slot_free">
                             {% if time_box_2.loc[i, "time_slot_id"] in free_slot["time_slot_id"].tolist() %}
@@ -44,9 +42,8 @@
                                 <input type="checkbox" name="slot_id" value="{{ time_box_2.loc[i, 'time_slot_id'] }}" disabled>
                             {% endif %}
                     {% endif %}   
-                    {% if time_box_3.loc[i, "order_id"] == time_box_3.loc[i, "order_id"] %}
+                    {% if time_box_3.loc[i, "order_id"] == time_box_3.loc[i, "order_id"] and time_box_3.loc[i, "order_id"] is not none %}
                         <td class="slot_busy" title="{{ time_box_3.loc[i, 'client_name']}}, {{time_box_3.loc[i, 'car_number'] }}, {{time_box_3.loc[i, 'client_phone'] }}">
-                            <!-- {{ time_box_3.loc[i, "time_slot_id"] }} -->
                     {% else %}
                         <td class="slot_free">
                             {% if time_box_3.loc[i, "time_slot_id"] in free_slot["time_slot_id"].tolist() %}
