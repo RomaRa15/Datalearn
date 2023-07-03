@@ -42,8 +42,6 @@ def index():
     if request.values.get('slot_id'):
         slot_id = list(map(int, request.values.getlist('slot_id')))
     if request.values.get('client_old'):
-        client_old = tuple(request.values.get('client_old').split(','))  # Assuming the values are comma-separated
-    if request.values.get('client_old'):
         client_old = tuple(request.values.get('client_old').split(','))
         client_name = client_old[0].strip("('\" ")
         car_number = client_old[1].strip(")'\" ")
@@ -62,9 +60,9 @@ def index():
     df_new_order = ""
     df_add_services_to_order = ""
     df_update_time_table = ""
-    if request.values.get('client_name'):
+    if request.values.get('client_name') and request.values.get('car_number'):
         df_add_client = get_add_client(conn, client_name, car_number, client_phone)
-    if request.values.get('bron') and client_name != "" and car_number != "":
+    if 'service_id' in session and request.values.get('bron') and client_name != "" and car_number != "" and session['service_id'] != [] and slot_id != []:
         df_new_order = get_new_order(conn, client_name, car_number)
         df_add_services_to_order = get_add_services_to_order(conn, session.get('car_type_id'), session.get('service_id'))
         df_update_time_table = get_update_time_table(conn, slot_id)

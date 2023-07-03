@@ -169,7 +169,7 @@
                     <div class="worker_plan"></div>
                 {% endif %}
                 <form action="/workers" method="get">
-                {% if btn == 1 or btn == 2 and worker_id != ""%}
+                {% if btn == 1 or btn == 2 and worker_id != "" and worker_id is not none %}
                     <button class="btn" id="all_plan" name="btn" value="3">Полное расписание</button>
                 {% else %}
                     <button class="btn" id="all_plan_active" name="btn" value="3">Полное расписание</button>
