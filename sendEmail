@@ -31,26 +31,27 @@ function sendNewBirthdayReminders() {
 
   if (birthdayList.length > 0) {
     var subject = "Дни рождения на этой неделе";
-    var body = "На следующей неделе (" + formatDate(startDate) + " - " + formatDate(endDate) + ") у этих сотрудников дни рождения:\n\n";
+    var body = "На следующей неделе (" + formatDate(startDate, "dd.MM.yyyy") + " - " + formatDate(endDate, "dd.MM.yyyy") + ") у этих сотрудников дни рождения:\n\n";
 
     for (var j = 0; j < birthdayList.length; j++) {
       var birthdayInfo = birthdayList[j];
       body += formatDate(birthdayInfo.birthday, "dd MMMM") + "\n";
-      body += (j + 1) + ". " + birthdayInfo.name + ", подразделение " + birthdayInfo.department + " - исполняется " + birthdayInfo.age + " " + getAgeLabel(birthdayInfo.age) + " - " + formatDate(birthdayInfo.birthday) + "\n\n";
+      body += (j + 1) + ". " + birthdayInfo.name + ", подразделение " + birthdayInfo.department + " - исполняется " + birthdayInfo.age + " " + getAgeLabel(birthdayInfo.age) + " - " + formatDate(birthdayInfo.birthday, "dd.MM.yyyy") + "\n\n";
     }
 
     MailApp.sendEmail("roman.rodionov.20@mail.ru", subject, body);
   }
   else {
     var subject = "Дни рождения на этой неделе";
-    var body = "На следующей неделе (" + formatDate(startDate) + " - " + formatDate(endDate) + ")";
+    var body = "На следующей неделе (" + formatDate(startDate, "dd.MM.yyyy") + " - " + formatDate(endDate, "dd.MM.yyyy") + ")";
 
     MailApp.sendEmail("roman.rodionov.20@mail.ru", subject, body);
   }
 }
 
 function formatDate(date, format) {
-  return Utilities.formatDate(date, "GMT+3", format);
+  var formattedDate = Utilities.formatDate(date, "GMT+3", "yyyy-MM-dd");
+  return Utilities.formatDate(new Date(formattedDate), "GMT+3", format);
 }
 
 function getAgeLabel(age) {
