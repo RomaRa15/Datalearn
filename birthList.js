@@ -7,7 +7,7 @@ function getUpcomingBirthdays() {
   var startDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
   var endDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 7);
 
-  var dataRange = sheet.getRange("A2:L"); // Замените "A2:L" на диапазон, где хранятся данные о сотрудниках
+  var dataRange = sheet.getRange("A2:Q"); // Замените "A2:Q" на диапазон, где хранятся данные о сотрудниках
   var data = dataRange.getValues();
 
   var birthdays = [];
@@ -18,8 +18,9 @@ function getUpcomingBirthdays() {
     if (birthday_search >= startDate && birthday_search <= endDate) {
       var name = data[i][1]; // Индекс 1 соответствует столбцу B, где хранятся ФИО сотрудников
       var department = data[i][2]; // Индекс 2 соответствует столбцу C, где хранятся подразделения
+      var email = data[i][16]; // Индекс 15 соответствует столбцу, где хранятся почты
       Logger.log(birthday)
-      birthdays.push([name, department, birthday]);
+      birthdays.push([name, department, birthday, email]);
     }
   }
 
@@ -40,7 +41,7 @@ function getUpcomingBirthdays() {
   birthListSheet.clearContents();
 
   if (birthdays.length > 0) {
-    var headers = ["Сотрудник.Физлицо", "Подразделение", "Дата рождения"];
+    var headers = ["Сотрудник.Физлицо", "Подразделение", "Дата рождения", "Почта"];
     var outputData = [headers].concat(birthdays);
 
     var range = birthListSheet.getRange(1, 1, outputData.length, outputData[0].length);
