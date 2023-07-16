@@ -19,7 +19,11 @@ function sendBirthdayGreetings() {
       var emailSubject = "С Днем Рождения, " + employeeName + "!";
       var employeeEmail = employee[3];
       
-      MailApp.sendEmail(employeeEmail, emailSubject, emailBody);
+      MailApp.sendEmail({
+      to: employeeEmail,
+      subject: emailSubject,
+      htmlBody: emailBody
+    });
     }
   }
 }
@@ -32,7 +36,8 @@ function isSameDate(date1, date2) {
 }
 
 function createEmailBody(employeeName, greetings) {
-  var emailBody = "Дорогой " + employeeName + ",\n\n";
+  var emailBody = '<img src="https://drive.google.com/uc?id=1rkhpRfFHzquc81B6JeOxkhKdZk6Xkx3a" alt="Поздравительная открытка">\n\n';
+  emailBody += '<div style="text-align: center;"><h1 style="font-family: Arial, sans-serif;">Дорогой ' + employeeName + ',</h1></div>\n\n';
   emailBody += "С Днем Рождения! Желаем вам счастья, здоровья и успехов в работе.\n\n";
   
   emailBody += "Вот поздравления от ваших коллег:\n";
@@ -40,11 +45,14 @@ function createEmailBody(employeeName, greetings) {
   for (var i = 0; i < greetings.length; i++) {
     var greeting = greetings[i];
     var birthdayPerson = greeting[0];
+    Logger.log(birthdayPerson)
     var message = greeting[1];
+    Logger.log(message)
     var sender = greeting[2];
+    Logger.log(sender)
     
     if (birthdayPerson === employeeName) {
-      emailBody += "- " + message + " (от " + sender + ")\n";
+      emailBody += '<div style="background-color: gainsboro; width: 400px; height: max-content; padding: 10px;"><strong>' + sender + '</strong><br>' + message + '</div>'
     }
   }
   
