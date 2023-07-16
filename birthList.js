@@ -19,7 +19,6 @@ function getUpcomingBirthdays() {
       var name = data[i][1]; // Индекс 1 соответствует столбцу B, где хранятся ФИО сотрудников
       var department = data[i][2]; // Индекс 2 соответствует столбцу C, где хранятся подразделения
       var email = data[i][16]; // Индекс 15 соответствует столбцу, где хранятся почты
-      Logger.log(birthday)
       birthdays.push([name, department, birthday, email]);
     }
   }
