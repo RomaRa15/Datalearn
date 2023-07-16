@@ -43,7 +43,7 @@ function createEmailBody(employeeName, greetings) {
     '</head>' +
     '<body>' +
     '<div style="color: white; background-color: #4C20C8; width: 700px; margin: auto;">' +
-    '<img src="https://drive.google.com/uc?id=1zipU1y8onQDBqglQyvGjlYuZcVwmvjxr" alt="Поздравительная открытка" style="display: block; margin: 0 auto;">' +
+    '<img src="https://drive.google.com/uc?1wCIgoyKfJJXvGKROL2DqOcA_MLqHPra4" alt="Поздравительная открытка" style="display: block; margin: 0 auto;">' +
     '<div style="margin: auto; color: white; text-align: center; width: 700px;"><h1 style="font-family: Arial, sans-serif; margin: 0 auto;">' + employeeName + '</h1>' +
     '<div style="width: 500px; margin: 10px auto;">От всей души поздравляем вас с Днем Рождения! Пусть этот особенный день принесет вам радость и счастье, а также запоминающиеся моменты. Желаем вам успехов во всех начинаниях, вдохновения для достижения новых высот и постоянного развития. Вы являетесь непреодолимым источником знаний и вдохновения для нас, вашей команды. Мы ценим ваш вклад в наш университет и благодарны за ваше посвящение работе. Ваше стремление к постоянному росту и достижению новых целей вдохновляет нас всех. Пусть каждый шаг, который вы совершаете, будет направлен к успеху, и каждый день будет полон радости и удовлетворения. Желаем вам благополучия, здоровья и долгих лет успешной карьеры.</div>' +
     '</div>' +
