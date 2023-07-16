@@ -85,8 +85,8 @@ function sendNewBirthdayReminders() {
 }
 
 function formatDate(date, format) {
-  var formattedDate = Utilities.formatDate(date, "GMT+10", "yyyy-MM-dd");
-  return Utilities.formatDate(new Date(formattedDate), "GMT+10", format);
+  var formattedDate = Utilities.formatDate(date, "Asia/Vladivostok", "yyyy-MM-dd");
+  return Utilities.formatDate(new Date(formattedDate), "Asia/Vladivostok", format);
 }
 
 function getAgeLabel(age) {
