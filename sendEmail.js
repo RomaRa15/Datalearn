@@ -38,8 +38,8 @@ function sendNewBirthdayReminders() {
   });
 
   if (birthdayList.length > 0) {
-    var subject = "Дни рождения на этой неделе";
-    var body = "На неделе, с " + formatDate(startDate, "dd.MM.yyyy") + " по " + formatDate(endDate, "dd.MM.yyyy") + ", следующие сотрудники отмечают день рождения:\n\n";
+    var subject = "Дни рождения на этой неделе: c"+ formatDate(startDate, "dd.MM") + " по " + formatDate(endDate, "dd.MM");
+    var body = "<h3>На предстоящей неделе: с " + formatDate(startDate, "dd.MM.yyyy") + " по " + formatDate(endDate, "dd.MM.yyyy") + ", следующие сотрудники отмечают свой день рождения:</h3>";
 
     var currentDay = null;
     var months = [
@@ -64,23 +64,33 @@ function sendNewBirthdayReminders() {
 
       if (day !== currentDay) {
         if (currentDay !== null) {
-          body += "\n";
+          body += "</ul>";
         }
-        body += day + " " + month + "\n";
+        body += "<p><b>" + day + " " + month + "</b></p><ul>";
         currentDay = day;
       }
 
-      body += birthdayInfo.name + ", " + birthdayInfo.department + " - исполняется " + birthdayInfo.age + " " + getAgeLabel(birthdayInfo.age) + " - " + formatDate(birthdayInfo.birthday, "dd.MM.yyyy") + "\n";
+      body += "<li>" + birthdayInfo.name + ", " + birthdayInfo.department + " - исполняется " + birthdayInfo.age + " " + getAgeLabel(birthdayInfo.age) + " - " + formatDate(birthdayInfo.birthday, "dd.MM.yyyy") + "</li>";
     }
-
-    body += "\n\nОставьте свое поздравление и пожелания для наших именинников по ссылке: https://forms.gle/MqvapuDHu2NLGruA8";
+    body += "</ul>";
+    body += "</br>";
+    body += "<p>Свои поздравления и пожелания для наших именинников можно оставить по <a href='https://forms.gle/MqvapuDHu2NLGruA8'>ссылке</a>.</p>";
+    body += "<p>Спасибо за ваши поздравления!</p>";
     
-    MailApp.sendEmail("roman.rodionov.20@mail.ru", subject, body);
+    MailApp.sendEmail({
+      to: "roman.rodionov.20@mail.ru",
+      subject: subject,
+      htmlBody: body
+    });
   } else {
     var subject = "Дни рождения на этой неделе";
-    var body = "На следующей неделе (" + formatDate(startDate, "dd.MM.yyyy") + " - " + formatDate(endDate, "dd.MM.yyyy") + ")";
+    var body = "<p>На следующей неделе (" + formatDate(startDate, "dd.MM.yyyy") + " - " + formatDate(endDate, "dd.MM.yyyy") + ")</p>";
 
-    MailApp.sendEmail("roman.rodionov.20@mail.ru", subject, body);
+    MailApp.sendEmail({
+      to: "roman.rodionov.20@mail.ru",
+      subject: subject,
+      htmlBody: body
+    });
   }
 }
 
