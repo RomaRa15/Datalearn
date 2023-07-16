@@ -20,10 +20,10 @@ function sendBirthdayGreetings() {
       var employeeEmail = employee[3];
       
       MailApp.sendEmail({
-      to: employeeEmail,
-      subject: emailSubject,
-      htmlBody: emailBody
-    });
+        to: employeeEmail,
+        subject: emailSubject,
+        htmlBody: emailBody
+      });
     }
   }
 }
@@ -36,27 +36,36 @@ function isSameDate(date1, date2) {
 }
 
 function createEmailBody(employeeName, greetings) {
-  var emailBody = '<img src="https://drive.google.com/uc?id=1rkhpRfFHzquc81B6JeOxkhKdZk6Xkx3a" alt="Поздравительная открытка">\n\n';
-  emailBody += '<div style="text-align: center;"><h1 style="font-family: Arial, sans-serif;">Дорогой ' + employeeName + ',</h1></div>\n\n';
-  emailBody += "С Днем Рождения! Желаем вам счастья, здоровья и успехов в работе.\n\n";
-  
-  emailBody += "Вот поздравления от ваших коллег:\n";
-  
+  var emailBody = '<head>' +
+    '<meta charset="UTF-8">' +
+    '<meta name="viewport" content="width=device-width, initial-scale=1.0">' +
+    '<title>Document</title>' +
+    '</head>' +
+    '<body>' +
+    '<div style="color: white; background-color: #4C20C8; width: 700px; margin: auto;">' +
+    '<img src="https://drive.google.com/uc?id=1zipU1y8onQDBqglQyvGjlYuZcVwmvjxr" alt="Поздравительная открытка" style="display: block; margin: 0 auto;">' +
+    '<div style="margin: auto; color: white; text-align: center; width: 700px;"><h1 style="font-family: Arial, sans-serif; margin: 0 auto;">' + employeeName + '</h1>' +
+    '<div style="width: 500px; margin: 10px auto;">От всей души поздравляем вас с Днем Рождения! Пусть этот особенный день принесет вам радость и счастье, а также запоминающиеся моменты. Желаем вам успехов во всех начинаниях, вдохновения для достижения новых высот и постоянного развития. Вы являетесь непреодолимым источником знаний и вдохновения для нас, вашей команды. Мы ценим ваш вклад в наш университет и благодарны за ваше посвящение работе. Ваше стремление к постоянному росту и достижению новых целей вдохновляет нас всех. Пусть каждый шаг, который вы совершаете, будет направлен к успеху, и каждый день будет полон радости и удовлетворения. Желаем вам благополучия, здоровья и долгих лет успешной карьеры.</div>' +
+    '</div>' +
+    '<br>' +
+    '<h3 style="text-align: center;">Примите искренние поздравления от ваших коллег!</h3>' +
+    '<div style="color: black; background-color: white; border-radius: 10px; width: 500px; height: max-content; padding: 10px; margin: auto;">';
+
   for (var i = 0; i < greetings.length; i++) {
     var greeting = greetings[i];
     var birthdayPerson = greeting[0];
-    Logger.log(birthdayPerson)
     var message = greeting[1];
-    Logger.log(message)
     var sender = greeting[2];
-    Logger.log(sender)
-    
+
     if (birthdayPerson === employeeName) {
-      emailBody += '<div style="background-color: gainsboro; width: 400px; height: max-content; padding: 10px;"><strong>' + sender + '</strong><br>' + message + '</div>'
+      emailBody += '<strong style="margin: 0;">' + sender + '</strong>' +
+        '<p style="margin-top: 10px;">' + message + '</p>';
     }
   }
-  
-  emailBody += "\nС наилучшими пожеланиями,\nВаша команда";
-  
+
+  emailBody += '</div>' +
+    '</div>' +
+    '</body>';
+
   return emailBody;
 }
