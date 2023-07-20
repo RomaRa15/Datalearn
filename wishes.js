@@ -6,15 +6,17 @@ function sendBirthdayGreetings() {
   var today = new Date();
   var currentYear = today.getFullYear();
   
-  var employees = birthSheet.getRange(2, 1, birthSheet.getLastRow() - 1, 4).getValues();
+  var employees = birthSheet.getRange(2, 1, birthSheet.getLastRow() - 1, 5).getValues(); // Обновляем диапазон, чтобы получить столбец статуса модерации
   var greetings = wishesSheet.getRange(2, 2, wishesSheet.getLastRow() - 1, 4).getValues();
   
   for (var i = 0; i < employees.length; i++) {
     var employee = employees[i];
     var employeeName = employee[0];
     var birthdate = new Date(employee[2]);
+    var status = employee[4]; // Получаем статус модерации
+
     birthdate.setFullYear(currentYear); // Установка текущего года для даты рождения
-    if (isSameDate(today, birthdate)) {
+    if (isSameDate(today, birthdate) && status === "1") { // Проверяем статус модерации перед отправкой
       var emailBody = createEmailBody(employeeName, greetings);
       var emailSubject = "С Днем Рождения, " + employeeName + "!";
       var employeeEmail = employee[3];
@@ -24,6 +26,9 @@ function sendBirthdayGreetings() {
         subject: emailSubject,
         htmlBody: emailBody
       });
+
+      // Обновляем статус модерации на "отправлена" после успешной отправки открытки
+      birthSheet.getRange(i + 2, 5).setValue("Отправлено"); // Здесь i + 2 потому что индексация в таблицах Google Sheets начинается с 1, а мы начинаем считать с 0, а также учитываем, что первая строка - это заголовки, поэтому увеличиваем индекс на 2.
     }
   }
 }
@@ -43,14 +48,13 @@ function createEmailBody(employeeName, greetings) {
     '</head>' +
     '<body>' +
     '<div style="color: white; background-color: #4C20C8; width: 700px; margin: auto;">' +
-    '<img src="https://drive.google.com/uc?1wCIgoyKfJJXvGKROL2DqOcA_MLqHPra4" alt="Поздравительная открытка" style="display: block; margin: 0 auto;">' +
+    '<img src="https://drive.google.com/uc?id=1wCIgoyKfJJXvGKROL2DqOcA_MLqHPra4" alt="Поздравительная открытка" style="display: block; margin: 0 auto;">' +
     '<div style="margin: auto; color: white; text-align: center; width: 700px;"><h1 style="font-family: Arial, sans-serif; margin: 0 auto;">' + employeeName + '</h1>' +
     '<div style="width: 500px; margin: 10px auto;">От всей души поздравляем вас с Днем Рождения! Пусть этот особенный день принесет вам радость и счастье, а также запоминающиеся моменты. Желаем вам успехов во всех начинаниях, вдохновения для достижения новых высот и постоянного развития. Вы являетесь непреодолимым источником знаний и вдохновения для нас, вашей команды. Мы ценим ваш вклад в наш университет и благодарны за ваше посвящение работе. Ваше стремление к постоянному росту и достижению новых целей вдохновляет нас всех. Пусть каждый шаг, который вы совершаете, будет направлен к успеху, и каждый день будет полон радости и удовлетворения. Желаем вам благополучия, здоровья и долгих лет успешной карьеры.</div>' +
     '</div>' +
     '<br>' +
-    '<h3 style="text-align: center;">Примите искренние поздравления от ваших коллег!</h3>' +
+    '<h2 style="text-align: center;">Примите искренние поздравления от ваших коллег!</h2>' +
     '<div style="color: black; background-color: white; border-radius: 10px; width: 500px; height: max-content; padding: 10px; margin: auto;">';
-
   for (var i = 0; i < greetings.length; i++) {
     var greeting = greetings[i];
     var birthdayPerson = greeting[0];
@@ -59,11 +63,12 @@ function createEmailBody(employeeName, greetings) {
 
     if (birthdayPerson === employeeName) {
       emailBody += '<strong style="margin: 0;">' + sender + '</strong>' +
-        '<p style="margin-top: 10px;">' + message + '</p>';
+        '<p style="margin-top: 10px; font-style: italic;">' + message + '</p>';
     }
   }
 
   emailBody += '</div>' +
+    '<img src="https://drive.google.com/uc?id=17YHUSPuj91csu-B-8qRNrJ-RdeRrqBGn" alt="Поздравительная открытка" style="display: block; margin: 0 auto;">'+
     '</div>' +
     '</body>';
 
