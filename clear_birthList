@@ -1,0 +1,31 @@
+function deleteRowsWithOldestDate() {
+  var spreadsheet = SpreadsheetApp.openById("13N-sl98Xc1s4QDPXoppMZ5LIt9D9ZWHpZjK9XgA3RiE");
+  var birthListSheet = spreadsheet.getSheetByName("BirthList"); // Замените "BirthList" на имя вашего листа для списка дней рождений
+
+  var dataRange = birthListSheet.getRange("F2:F"); // Получаем диапазон столбца F, начиная со второй строки (пропускаем заголовки)
+  var data = dataRange.getValues();
+
+  var oldestDate = null;
+  var rowsToDelete = [];
+
+  // Находим самую старую дату
+  for (var i = 0; i < data.length; i++) {
+    if (data[i][0] instanceof Date) {
+      if (!oldestDate || data[i][0] < oldestDate) {
+        oldestDate = data[i][0];
+      }
+    }
+  }
+
+  // Находим строки с самой старой датой и добавляем их индексы в массив
+  for (var i = 0; i < data.length; i++) {
+    if (data[i][0] instanceof Date && data[i][0].getTime() === oldestDate.getTime()) {
+      rowsToDelete.push(i + 2); // Добавляем индекс строки в массив (1 для заголовков и 1 для смещения)
+    }
+  }
+
+  // Удаляем строки с найденными индексами, начиная с последних, чтобы избежать смещения
+  for (var i = rowsToDelete.length - 1; i >= 0; i--) {
+    birthListSheet.deleteRow(rowsToDelete[i]);
+  }
+}
