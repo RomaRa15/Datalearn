@@ -5,6 +5,20 @@ function deleteRowsWithOldestDate() {
   var dataRange = birthListSheet.getRange("F2:F"); // Получаем диапазон столбца F, начиная со второй строки (пропускаем заголовки)
   var data = dataRange.getValues();
 
+  var uniqueDates = new Set();
+
+  // Подсчитываем количество уникальных дат в столбце F
+  for (var i = 0; i < data.length; i++) {
+    if (data[i][0] instanceof Date) {
+      uniqueDates.add(data[i][0].getTime());
+    }
+  }
+
+  // Если в столбце только одна уникальная дата, ничего не удаляем
+  if (uniqueDates.size === 1) {
+    return;
+  }
+
   var oldestDate = null;
   var rowsToDelete = [];
 
