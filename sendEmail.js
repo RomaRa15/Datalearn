@@ -1,82 +1,220 @@
-function sendBirthdayGreetings() {
-  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-  var birthSheet = spreadsheet.getSheetByName("BirthList");
-  var wishesSheet = spreadsheet.getSheetByName("Поздравления");
-  
-  // Check if there are any rows in the BirthList sheet
-  if (birthSheet.getLastRow() < 2) {
-    // If there are no rows (excluding headers), return early and do nothing
-    return;
-  }
+function sendNewBirthdayReminders() {
+  var spreadsheet = SpreadsheetApp.openById("13N-sl98Xc1s4QDPXoppMZ5LIt9D9ZWHpZjK9XgA3RiE");
+  var sheet = spreadsheet.getSheetByName("Sheet1");
 
   var today = new Date();
-  var currentYear = today.getFullYear();
-  
-  var employees = birthSheet.getRange(2, 1, birthSheet.getLastRow() - 1, 5).getValues(); // Обновляем диапазон, чтобы получить столбец статуса модерации
-  var greetings = wishesSheet.getRange(2, 2, wishesSheet.getLastRow() - 1, 4).getValues();
-  
+  var startDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 5);
+  var endDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 11);
+
+  var employees = sheet.getRange("A2:P" + sheet.getLastRow()).getValues();
+  var birthdayList = [];
+
   for (var i = 0; i < employees.length; i++) {
     var employee = employees[i];
-    var employeeName = employee[0];
-    var birthdate = new Date(employee[2]);
-    var status = employee[4]; // Получаем статус модерации
+    var birthday = new Date(employee[11]);
+    var birthday_search = new Date(today.getFullYear(), birthday.getMonth(), birthday.getDate());
 
-    birthdate.setFullYear(currentYear); // Установка текущего года для даты рождения
-    if (isSameDate(today, birthdate) && status === "1") { // Проверяем статус модерации перед отправкой
-      var emailBody = createEmailBody(employeeName, greetings);
-      var emailSubject = "С Днем Рождения, " + employeeName + "!";
-      var employeeEmail = employee[3];
-      
-      MailApp.sendEmail({
-        to: employeeEmail,
-        subject: emailSubject,
-        htmlBody: emailBody
-      });
+    if (birthday_search >= startDate && birthday_search <= endDate) {
+      var name = employee[1];
+      var department = employee[2];
+      var age = today.getFullYear() - birthday.getFullYear();
 
-      // Обновляем статус модерации на "отправлена" после успешной отправки открытки
-      birthSheet.getRange(i + 2, 5).setValue("Отправлено"); // Здесь i + 2 потому что индексация в таблицах Google Sheets начинается с 1, а мы начинаем считать с 0, а также учитываем, что первая строка - это заголовки, поэтому увеличиваем индекс на 2.
-    }
-  }
-}
+      var birthdayInfo = {
+        name: name,
+        department: department,
+        age: age,
+        birthday: birthday
+      };
 
-function isSameDate(date1, date2) {
-  return (
-    date1.getDate() === date2.getDate() &&
-    date1.getMonth() === date2.getMonth()
-  );
-}
-
-function createEmailBody(employeeName, greetings) {
-  var emailBody = '<head>' +
-    '<meta charset="UTF-8">' +
-    '<meta name="viewport" content="width=device-width, initial-scale=1.0">' +
-    '<title>Document</title>' +
-    '</head>' +
-    '<body>' +
-    '<div style="color: white; background-color: #4C20C8; width: 700px; margin: auto;">' +
-    '<img src="https://drive.google.com/uc?id=1wCIgoyKfJJXvGKROL2DqOcA_MLqHPra4" alt="Поздравительная открытка" style="display: block; margin: 0 auto;">' +
-    '<div style="margin: auto; color: white; text-align: center; width: 700px;"><h1 style="font-family: Arial, sans-serif; margin: 0 auto;">' + employeeName + '</h1>' +
-    '<div style="width: 500px; margin: 10px auto;">От всей души поздравляем вас с Днем Рождения! Пусть этот особенный день принесет вам радость и счастье, а также запоминающиеся моменты. Желаем вам успехов во всех начинаниях, вдохновения для достижения новых высот и постоянного развития. Вы являетесь непреодолимым источником знаний и вдохновения для нас, вашей команды. Мы ценим ваш вклад в наш университет и благодарны за ваше посвящение работе. Ваше стремление к постоянному росту и достижению новых целей вдохновляет нас всех. Пусть каждый шаг, который вы совершаете, будет направлен к успеху, и каждый день будет полон радости и удовлетворения. Желаем вам благополучия, здоровья и долгих лет успешной карьеры.</div>' +
-    '</div>' +
-    '<br>' +
-    '<h2 style="text-align: center;">Примите искренние поздравления от ваших коллег!</h2>' +
-    '<div style="color: black; background-color: white; border-radius: 10px; width: 500px; height: max-content; padding: 10px; margin: auto;">';
-  for (var i = 0; i < greetings.length; i++) {
-    var greeting = greetings[i];
-    var birthdayPerson = greeting[0];
-    var message = greeting[1];
-    var sender = greeting[2];
-
-    if (birthdayPerson === employeeName) {
-      emailBody += '<strong style="margin: 0;">' + sender + '</strong>' +
-        '<p style="margin-top: 10px; font-style: italic;">' + message + '</p>';
+      birthdayList.push(birthdayInfo);
     }
   }
 
-  emailBody += '</div>' +
-    '<img src="https://drive.google.com/uc?id=17YHUSPuj91csu-B-8qRNrJ-RdeRrqBGn" alt="Поздравительная открытка" style="display: block; margin: 0 auto;">'+
-    '</div>' +
-    '</body>';
+  // Сортировка списка по возрастанию дня рождения
+  birthdayList.sort(function(a, b) {
+    var dayA = a.birthday.getDate();
+    var dayB = b.birthday.getDate();
+    return dayA - dayB;
+  });
 
-  return emailBody;
+  if (birthdayList.length > 0) {
+    var subject = "Дни рождения на этой неделе: c "+ formatDate(startDate, "dd.MM") + " по " + formatDate(endDate, "dd.MM");
+    var body = "<h3>На предстоящей неделе: с " + formatDate(startDate, "dd.MM.yyyy") + " по " + formatDate(endDate, "dd.MM.yyyy") + ", следующие сотрудники отмечают свой день рождения:</h3>";
+
+    var currentDay = null;
+    var months = [
+      "января",
+      "февраля",
+      "марта",
+      "апреля",
+      "мая",
+      "июня",
+      "июля",
+      "августа",
+      "сентября",
+      "октября",
+      "ноября",
+      "декабря"
+    ];
+
+    for (var j = 0; j < birthdayList.length; j++) {
+      var birthdayInfo = birthdayList[j];
+      var day = formatDate(birthdayInfo.birthday, "dd");
+      var month = months[birthdayInfo.birthday.getMonth()];
+
+      if (day !== currentDay) {
+        if (currentDay !== null) {
+          body += "</ul>";
+        }
+        body += "<p><b>" + day + " " + month + "</b></p><ul>";
+        currentDay = day;
+      }
+
+      body += "<li>" + birthdayInfo.name + ", " + birthdayInfo.department + " - исполняется " + birthdayInfo.age + " " + getAgeLabel(birthdayInfo.age) + " - " + formatDate(birthdayInfo.birthday, "dd.MM.yyyy") + "</li>";
+    }
+    body += "</ul>";
+    body += "</br>";
+    body += "<p>Свои поздравления и пожелания для наших именинников можно оставить по <a href='https://forms.gle/MqvapuDHu2NLGruA8'>ссылке</a>.</p>";
+    body += "<p>Спасибо за ваши поздравления!</p>";
+    
+    MailApp.sendEmail({
+      to: "roman.rodionov.20@mail.ru",
+      subject: subject,
+      htmlBody: body
+    });
+  } else {
+    var subject = "Дни рождения на этой неделе";
+    var body = "<p>На следующей неделе (" + formatDate(startDate, "dd.MM.yyyy") + " - " + formatDate(endDate, "dd.MM.yyyy") + ")</p>";
+
+    MailApp.sendEmail({
+      to: "roman.rodionov.20@mail.ru",
+      subject: subject,
+      htmlBody: body
+    });
+  }
+}
+
+function formatDate(date, format) {
+  var formattedDate = Utilities.formatDate(date, "Asia/Vladivostok", "yyyy-MM-dd");
+  return Utilities.formatDate(new Date(formattedDate), "Asia/Vladivostok", format);
+}
+
+function getAgeLabel(age) {
+  if (age % 10 === 1 && age !== 11) {
+    return "год";
+  } else if ((age % 10 === 2 || age % 10 === 3 || age % 10 === 4) && !(age >= 12 && age <= 14)) {
+    return "года";
+  } else {
+    return "лет";
+  }
+}
+function sendNewBirthdayReminders() {
+  var spreadsheet = SpreadsheetApp.openById("13N-sl98Xc1s4QDPXoppMZ5LIt9D9ZWHpZjK9XgA3RiE");
+  var sheet = spreadsheet.getSheetByName("Sheet1");
+
+  var today = new Date();
+  var startDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 5);
+  var endDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 11);
+
+  var employees = sheet.getRange("A2:P" + sheet.getLastRow()).getValues();
+  var birthdayList = [];
+
+  for (var i = 0; i < employees.length; i++) {
+    var employee = employees[i];
+    var birthday = new Date(employee[11]);
+    var birthday_search = new Date(today.getFullYear(), birthday.getMonth(), birthday.getDate());
+
+    if (birthday_search >= startDate && birthday_search <= endDate) {
+      var name = employee[1];
+      var department = employee[2];
+      var age = today.getFullYear() - birthday.getFullYear();
+
+      var birthdayInfo = {
+        name: name,
+        department: department,
+        age: age,
+        birthday: birthday
+      };
+
+      birthdayList.push(birthdayInfo);
+    }
+  }
+
+  // Сортировка списка по возрастанию дня рождения
+  birthdayList.sort(function(a, b) {
+    var dayA = a.birthday.getDate();
+    var dayB = b.birthday.getDate();
+    return dayA - dayB;
+  });
+
+  if (birthdayList.length > 0) {
+    var subject = "Дни рождения на этой неделе: c "+ formatDate(startDate, "dd.MM") + " по " + formatDate(endDate, "dd.MM");
+    var body = "<h3>На предстоящей неделе: с " + formatDate(startDate, "dd.MM.yyyy") + " по " + formatDate(endDate, "dd.MM.yyyy") + ", следующие сотрудники отмечают свой день рождения:</h3>";
+
+    var currentDay = null;
+    var months = [
+      "января",
+      "февраля",
+      "марта",
+      "апреля",
+      "мая",
+      "июня",
+      "июля",
+      "августа",
+      "сентября",
+      "октября",
+      "ноября",
+      "декабря"
+    ];
+
+    for (var j = 0; j < birthdayList.length; j++) {
+      var birthdayInfo = birthdayList[j];
+      var day = formatDate(birthdayInfo.birthday, "dd");
+      var month = months[birthdayInfo.birthday.getMonth()];
+
+      if (day !== currentDay) {
+        if (currentDay !== null) {
+          body += "</ul>";
+        }
+        body += "<p><b>" + day + " " + month + "</b></p><ul>";
+        currentDay = day;
+      }
+
+      body += "<li>" + birthdayInfo.name + ", " + birthdayInfo.department + " - исполняется " + birthdayInfo.age + " " + getAgeLabel(birthdayInfo.age) + " - " + formatDate(birthdayInfo.birthday, "dd.MM.yyyy") + "</li>";
+    }
+    body += "</ul>";
+    body += "</br>";
+    body += "<p>Свои поздравления и пожелания для наших именинников можно оставить по <a href='https://forms.gle/MqvapuDHu2NLGruA8'>ссылке</a>.</p>";
+    body += "<p>Спасибо за ваши поздравления!</p>";
+    
+    MailApp.sendEmail({
+      to: "roman.rodionov.20@mail.ru",
+      subject: subject,
+      htmlBody: body
+    });
+  } else {
+    var subject = "Дни рождения на этой неделе";
+    var body = "<p>На следующей неделе (" + formatDate(startDate, "dd.MM.yyyy") + " - " + formatDate(endDate, "dd.MM.yyyy") + ")</p>";
+
+    MailApp.sendEmail({
+      to: "roman.rodionov.20@mail.ru",
+      subject: subject,
+      htmlBody: body
+    });
+  }
+}
+
+function formatDate(date, format) {
+  var formattedDate = Utilities.formatDate(date, "Asia/Vladivostok", "yyyy-MM-dd");
+  return Utilities.formatDate(new Date(formattedDate), "Asia/Vladivostok", format);
+}
+
+function getAgeLabel(age) {
+  if (age % 10 === 1 && age !== 11) {
+    return "год";
+  } else if ((age % 10 === 2 || age % 10 === 3 || age % 10 === 4) && !(age >= 12 && age <= 14)) {
+    return "года";
+  } else {
+    return "лет";
+  }
 }
