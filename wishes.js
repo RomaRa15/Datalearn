@@ -3,6 +3,12 @@ function sendBirthdayGreetings() {
   var birthSheet = spreadsheet.getSheetByName("BirthList");
   var wishesSheet = spreadsheet.getSheetByName("Поздравления");
   
+  // Check if there are any rows in the BirthList sheet
+  if (birthSheet.getLastRow() < 2) {
+    // If there are no rows (excluding headers), return early and do nothing
+    return;
+  }
+
   var today = new Date();
   var currentYear = today.getFullYear();
   
