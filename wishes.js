@@ -59,9 +59,23 @@ function createEmailBody(employeeName, greetings) {
     '<div style="margin: auto; color: white; text-align: center; width: 700px;"><h1 style="font-family: Arial, sans-serif; margin: 0 auto;">' + employeeName + '</h1>' +
     '<div style="width: 500px; margin: 10px auto;">От всей души поздравляем вас с Днем Рождения! Пусть этот особенный день принесет вам радость и счастье, а также запоминающиеся моменты. Желаем вам успехов во всех начинаниях, вдохновения для достижения новых высот и постоянного развития. Вы являетесь непреодолимым источником знаний и вдохновения для нас, вашей команды. Мы ценим ваш вклад в наш университет и благодарны за ваше посвящение работе. Ваше стремление к постоянному росту и достижению новых целей вдохновляет нас всех. Пусть каждый шаг, который вы совершаете, будет направлен к успеху, и каждый день будет полон радости и удовлетворения. Желаем вам благополучия, здоровья и долгих лет успешной карьеры.</div>' +
     '</div>' +
-    '<br>' +
-    '<h2 style="text-align: center;">Примите искренние поздравления от ваших коллег!</h2>' +
+    '<br>';
+
+  var hasGreatings = false;
+  for (var i = 0; i < greetings.length; i++) {
+    var greeting = greetings[i]; // Fixed variable name here
+    var birthdayPerson = greeting[0];
+
+    if (birthdayPerson === employeeName) {
+      hasGreatings = true;
+    }
+  }
+  
+  if (hasGreatings == true) {
+    emailBody += '<h2 style="text-align: center;">Примите искренние поздравления от ваших коллег!</h2>' +
     '<div style="color: black; background-color: white; border-radius: 10px; width: 500px; height: max-content; padding: 10px; margin: auto;">';
+  }
+  
   for (var i = 0; i < greetings.length; i++) {
     var greeting = greetings[i];
     var birthdayPerson = greeting[0];
