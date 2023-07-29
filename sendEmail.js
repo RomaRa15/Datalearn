@@ -5,7 +5,7 @@ function sendNewBirthdayReminders() {
   var today = new Date();
   var startDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 5);
   var endDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 11);
-
+  var emailAddresses = "roman.rodionov.20@mail.ru, roman.rodionov.02@yandex.ru";
   var employees = sheet.getRange("A2:P" + sheet.getLastRow()).getValues();
   var birthdayList = [];
 
@@ -78,20 +78,11 @@ function sendNewBirthdayReminders() {
     body += "<p>Спасибо за ваши поздравления!</p>";
     
     MailApp.sendEmail({
-      to: "roman.rodionov.20@mail.ru",
+      to: emailAddresses,
       subject: subject,
       htmlBody: body
     });
-  } else {
-    var subject = "Дни рождения на этой неделе";
-    var body = "<p>На следующей неделе (" + formatDate(startDate, "dd.MM.yyyy") + " - " + formatDate(endDate, "dd.MM.yyyy") + ")</p>";
-
-    MailApp.sendEmail({
-      to: "roman.rodionov.20@mail.ru",
-      subject: subject,
-      htmlBody: body
-    });
-  }
+  } 
 }
 
 function formatDate(date, format) {
