@@ -2,7 +2,7 @@ function sendBirthdayGreetings() {
   var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   var birthSheet = spreadsheet.getSheetByName("BirthList");
   var wishesSheet = spreadsheet.getSheetByName("Поздравления");
-  
+
   // Check if there are any rows in the BirthList sheet
   if (birthSheet.getLastRow() < 2) {
     // If there are no rows (excluding headers), return early and do nothing
@@ -11,33 +11,34 @@ function sendBirthdayGreetings() {
 
   var today = new Date();
   var currentYear = today.getFullYear();
-  
-  var employees = birthSheet.getRange(2, 1, birthSheet.getLastRow() - 1, 5).getValues(); // Обновляем диапазон, чтобы получить столбец статуса модерации
-  var greetings = wishesSheet.getRange(2, 2, wishesSheet.getLastRow() - 1, 4).getValues();
-  
+
+  var employees = birthSheet.getRange(2, 1, birthSheet.getLastRow() - 1, 5).getValues();
+  var greetings = wishesSheet.getLastRow() > 1 ? wishesSheet.getRange(2, 2, wishesSheet.getLastRow() - 1, 4).getValues() : [];
+
   for (var i = 0; i < employees.length; i++) {
     var employee = employees[i];
     var employeeName = employee[0];
     var birthdate = new Date(employee[2]);
-    var status = employee[4]; // Получаем статус модерации
+    var status = employee[4];
 
-    birthdate.setFullYear(currentYear); // Установка текущего года для даты рождения
-    if (isSameDate(today, birthdate) && status === "1") { // Проверяем статус модерации перед отправкой
+    birthdate.setFullYear(currentYear);
+
+    if (isSameDate(today, birthdate) && status === "1") {
       var emailBody = createEmailBody(employeeName, greetings);
       var emailSubject = "С Днем Рождения, " + employeeName + "!";
       var employeeEmail = employee[3];
-      
+
       MailApp.sendEmail({
         to: employeeEmail,
         subject: emailSubject,
-        htmlBody: emailBody
+        htmlBody: emailBody,
       });
 
-      // Обновляем статус модерации на "отправлена" после успешной отправки открытки
-      birthSheet.getRange(i + 2, 5).setValue("Отправлено"); // Здесь i + 2 потому что индексация в таблицах Google Sheets начинается с 1, а мы начинаем считать с 0, а также учитываем, что первая строка - это заголовки, поэтому увеличиваем индекс на 2.
+      birthSheet.getRange(i + 2, 5).setValue("Отправлено");
     }
   }
 }
+
 
 function isSameDate(date1, date2) {
   return (
